@@ -1,14 +1,14 @@
-# useform
-A Reacy Hook for handling forms
+# useForm
+A React Hook for handling forms
 
 ```bash
-npm install @robertkirsz/useForm
+npm install @robertkirsz/useform
 ```
 
 ##### Simplest usable example:
 
 ```js
-import useForm from '@robertkirsz/useForm'
+import useForm from '@robertkirsz/useform'
 
 function App() {
   const form = useForm({
