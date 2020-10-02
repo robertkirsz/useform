@@ -1,0 +1,60 @@
+{
+  "name": "useform",
+  "version": "0.2.0",
+  "description": "A React Hook for handling forms",
+  "author": "Robert Kirsz <robert.kirsz@gmail.com> (https://robertkirsz.com/)",
+  "homepage": "https://github.com/robertkirsz/useform#readme",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "files": [
+    "dist/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robertkirsz/useform.git"
+  },
+  "keywords": [
+    "react",
+    "hooks",
+    "form"
+  ],
+  "bugs": {
+    "url": "https://github.com/robertkirsz/useform/issues"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --hot --config ./webpack.dev.js",
+    "build": "webpack --mode=production --config ./webpack.prod.js",
+    "serve": "http-server dist",
+    "clean": "rm -rf dist",
+    "test": "jest --watch --verbose",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint --fix --ignore-path .gitignore .",
+    "prettier": "prettier --ignore-path .gitignore --write '{**/*.js,*.js}'"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.11.2",
+    "lodash.isequal": "4.5.0",
+    "react": "17.0.0-rc.2",
+    "react-dom": "17.0.0-rc.2"
+  },
+  "devDependencies": {
+    "@babel/core": "7.11.6",
+    "@babel/plugin-transform-runtime": "7.11.5",
+    "@babel/preset-env": "7.11.5",
+    "@babel/preset-react": "7.10.4",
+    "@testing-library/jest-dom": "5.11.4",
+    "@testing-library/react": "11.0.4",
+    "babel-eslint": "10.1.0",
+    "babel-loader": "8.1.0",
+    "copy-webpack-plugin": "6.1.1",
+    "eslint": "7.10.0",
+    "eslint-plugin-react": "7.21.2",
+    "html-webpack-plugin": "4.5.0",
+    "http-server": "0.12.3",
+    "jest": "26.4.2",
+    "prettier": "2.1.2",
+    "webpack": "4.44.2",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "3.11.0"
+  }
+}
