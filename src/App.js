@@ -39,7 +39,7 @@ const defaultProps = {
   statePreview: emptyFunction
 }
 
-function Form({ initialValues, onSubmit, validators, warningValidators, statePreview, children }) {
+function Form({ initialValues, onSubmit, validators, warningValidators, children }) {
   const form = useForm({ initialValues, onSubmit, validators, warningValidators, addValidationStatus: false })
 
   return (
@@ -92,12 +92,10 @@ function Form({ initialValues, onSubmit, validators, warningValidators, statePre
           {form.isSubmitting ? 'Submitting...' : 'Submit'}
         </button>
 
-        {form.errors.input && <p className="error">{form.errors.input}</p>}
-        {form.warnings.input && <p className="warning">{form.warnings.input}</p>}
+        {(form.errors.input || form.warnings.input) && <p>{form.errors.input || form.warnings.input}</p>}
       </Div>
 
-      {statePreview(form)}
-      {children}
+      {children(form)}
     </Div>
   )
 }
@@ -112,21 +110,32 @@ export default function App({ initialValues, onSubmit, validators, warningValida
     setInternalValues(changedValues)
   }
 
+  function setError(form) {
+    return () => {
+      form.setError('input', 'Manually set error!')
+      form.touchField('input')
+    }
+  }
+
   return (
     <Form
       initialValues={internalValues}
       onSubmit={onSubmit}
       validators={validators}
       warningValidators={warningValidators}
-      statePreview={form => (
-        <Div columnTop radius={4} padding={8} border="1px solid">
-          <pre>
-            {JSON.stringify({ form: { values: form.values, errors: form.errors, warnings: form.warnings } }, null, 2)}
-          </pre>
-        </Div>
-      )}
     >
-      <button onClick={reinitializeValues}>Reinitialize values</button>
+      {form => (
+        <>
+          <Div columnTop radius={4} padding={8} border="1px solid">
+            <pre>
+              {JSON.stringify({ form: { values: form.values, errors: form.errors, warnings: form.warnings } }, null, 2)}
+            </pre>
+          </Div>
+
+          <button onClick={setError(form)}>Manually set error</button>
+          <button onClick={reinitializeValues}>Reinitialize values</button>
+        </>
+      )}
     </Form>
   )
 }

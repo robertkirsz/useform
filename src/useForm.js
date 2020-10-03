@@ -92,8 +92,8 @@ export default function useForm({
   // Validates all form fields at once
   const validateAllFields = (fieldNames = Object.keys(validators)) => {
     const validationResult = fieldNames.reduce(
-      (all, key) => ({ ...all, [key]: validators[key]?.(values[key], values) }),
-      {}
+      (all, key) => ({ ...all, [key]: all[key] || validators[key]?.(values[key], values) }),
+      errors
     )
 
     setErrors(validationResult)

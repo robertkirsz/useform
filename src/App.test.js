@@ -4,7 +4,7 @@ import '@testing-library/jest-dom'
 import App, { initialValues, validators, warningValidators, changedValues } from 'App'
 
 // TODO: test
-// Direct changes (values, errors, warnings)
+// Direct changes (values, warnings)
 // addValidationStatus
 // Scroll to invalid field
 // Check if values get changed in form.values as well
@@ -109,12 +109,24 @@ describe('useForm hook', () => {
   it("Doesn't submit an invalid form", () => {
     const onSubmit = jest.fn()
 
-    const { queryByTestId } = render(
+    const { getByTestId } = render(
       <App initialValues={{ ...initialValues, input: '' }} validators={validators} onSubmit={onSubmit} />
     )
 
-    fireEvent.submit(queryByTestId('form'))
-    expect(onSubmit).toBeCalledTimes(0)
+    fireEvent.submit(getByTestId('form'))
+    expect(onSubmit).not.toBeCalled()
+  })
+
+  it('Lets errors be set manually', () => {
+    const onSubmit = jest.fn()
+
+    const { getByTestId, getByText } = render(<App validators={validators} onSubmit={onSubmit} />)
+
+    fireEvent.click(getByText('Manually set error'))
+    expect(getByText('Manually set error!')).toBeVisible()
+
+    fireEvent.submit(getByTestId('form'))
+    expect(onSubmit).not.toBeCalled()
   })
 
   it("Doesn't crash when no props are passed in", () => {
