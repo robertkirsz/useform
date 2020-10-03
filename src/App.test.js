@@ -1,13 +1,20 @@
 import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import App, { initialValues, validators, warningValidators, changedValues, SUBMIT, SUBMITTING } from 'App'
+import App, { initialValues, validators, warningValidators, changedValues } from 'App'
+
+// TODO: test
+// Works with and without Promised submit
+// Direct changes (values, errors, warnings)
+// addValidationStatus
+// Scroll to invalid field
+// Check if values get changed in form.values as well
 
 describe('useForm hook', () => {
   window.scrollTo = jest.fn()
 
-  it('Works with native input elements', async () => {
-    const onSubmit = jest.fn(() => new Promise(resolve => resolve))
+  it('Works with initial values', async () => {
+    const onSubmit = jest.fn(() => new Promise(resolve => setTimeout(resolve, 300)))
 
     const { getByTestId, getByLabelText, findByText } = render(
       <App initialValues={initialValues} onSubmit={onSubmit} />
@@ -27,7 +34,7 @@ describe('useForm hook', () => {
     expect(radio1.checked).toBe(true)
     expect(radio2.checked).toBe(false)
     expect(select.value).toBe(initialValues.select)
-    expect(button.textContent).toBe(SUBMIT)
+    expect(button.textContent).toBe('Submit')
 
     // Make changes in every input field
     fireEvent.change(input, { target: { value: changedValues.input } })
@@ -44,7 +51,7 @@ describe('useForm hook', () => {
 
     // Submit the form
     fireEvent.submit(form)
-    expect(await findByText(SUBMITTING)).toBeVisible()
+    expect(await findByText('Submitting...')).toBeVisible()
 
     // Check if submitted values are as expected
     expect(onSubmit).toBeCalledTimes(1)
@@ -52,7 +59,16 @@ describe('useForm hook', () => {
     expect(onSubmit.mock.calls[0][0].checkbox).toBe(changedValues.checkbox)
     expect(onSubmit.mock.calls[0][0].radio).toBe(changedValues.radio)
     expect(onSubmit.mock.calls[0][0].select).toBe(changedValues.select)
-    // expect(await findByText(SUBMIT)).toBeVisible()
+    
+    expect(await findByText('Submit')).toBeVisible()
+  })
+
+  it('Allows initial values to be reinitialized', () => {
+    const { queryByLabelText, getByText } = render(<App initialValues={initialValues} />)
+
+    expect(queryByLabelText('Input').value).toBe(initialValues.input)
+    fireEvent.click(getByText('Reinitialize values'))
+    expect(queryByLabelText('Input').value).toBe(changedValues.input)
   })
 
   it('Displays validation errors', () => {
@@ -77,7 +93,7 @@ describe('useForm hook', () => {
     expect(getByText('Value is too short')).toBeVisible()
   })
 
-  it("Doesn't submit invalid form", () => {
+  it("Doesn't submit an invalid form", () => {
     const onSubmit = jest.fn()
 
     const { queryByTestId } = render(
@@ -93,14 +109,6 @@ describe('useForm hook', () => {
 
     fireEvent.submit(queryByTestId('form'))
     expect(queryByTestId('form')).toBeInTheDocument()
-  })
-
-  it('Allows initial values to be reinitialized', () => {
-    const { queryByLabelText, getByText } = render(<App initialValues={initialValues} />)
-
-    expect(queryByLabelText('Input').value).toBe(initialValues.input)
-    fireEvent.click(getByText('Reinitialize values'))
-    expect(queryByLabelText('Input').value).toBe(changedValues.input)
   })
 
   window.scrollTo.mockClear()

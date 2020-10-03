@@ -117,7 +117,6 @@ export default function useForm({
       }
     }
 
-    // These two props are CCL-specific and used to display validation status
     if (addValidationStatus) {
       currentInput.validationStatus =
         (touched[currentInputName] || null) &&

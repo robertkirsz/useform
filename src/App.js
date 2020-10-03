@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import Div from 'styled-kit/Div'
 import useForm from 'useForm'
 
-export const SUBMIT = 'Submit'
-export const SUBMITTING = 'Submitting...'
 const emptyFunction = () => {}
 
 export const initialValues = {
@@ -41,23 +39,31 @@ const defaultProps = {
   statePreview: emptyFunction
 }
 
-function Form({ initialValues, onSubmit, validators, warningValidators, statePreview }) {
+function Form({ initialValues, onSubmit, validators, warningValidators, statePreview, children }) {
   const form = useForm({ initialValues, onSubmit, validators, warningValidators, addValidationStatus: false })
 
   return (
-    <>
-      <form data-testid="form" onSubmit={form.handleSubmit}>
-        <div>
+    <Div columnTop itemsCenter>
+      <Div
+        as="form"
+        columnTop
+        radius={4}
+        padding={8}
+        border="1px solid"
+        data-testid="form"
+        onSubmit={form.handleSubmit}
+      >
+        <Div listLeft itemsCenter>
           <label htmlFor="input">Input</label>
           <input id="input" {...form.inputs.input} />
-        </div>
+        </Div>
 
-        <div>
+        <Div listLeft itemsCenter>
           <input type="checkbox" id="checkbox" {...form.inputs.checkbox} />
           <label htmlFor="checkbox">Checkbox</label>
-        </div>
+        </Div>
 
-        <div>
+        <Div listLeft itemsCenter>
           <input
             type="radio"
             id="radio1"
@@ -75,7 +81,7 @@ function Form({ initialValues, onSubmit, validators, warningValidators, statePre
             onChange={form.inputs.radio?.onChange || emptyFunction}
           />
           <label htmlFor="radio2">Radio 2</label>
-        </div>
+        </Div>
 
         <select data-testid="select" {...form.inputs.select}>
           <option value="option1">Option 1</option>
@@ -83,15 +89,16 @@ function Form({ initialValues, onSubmit, validators, warningValidators, statePre
         </select>
 
         <button data-testid="button" type="submit">
-          {form.isSubmitting ? SUBMITTING : SUBMIT}
+          {form.isSubmitting ? 'Submitting...' : 'Submit'}
         </button>
 
         {form.errors.input && <p className="error">{form.errors.input}</p>}
         {form.warnings.input && <p className="warning">{form.warnings.input}</p>}
-      </form>
+      </Div>
 
       {statePreview(form)}
-    </>
+      {children}
+    </Div>
   )
 }
 
@@ -106,22 +113,21 @@ export default function App({ initialValues, onSubmit, validators, warningValida
   }
 
   return (
-    <div id="app">
-      <Form
-        initialValues={internalValues}
-        onSubmit={onSubmit}
-        validators={validators}
-        warningValidators={warningValidators}
-        statePreview={form => (
-          <Div columnTop border="1px solid">
-            <pre>Values: {JSON.stringify(form.values, null, 2)}</pre>
-            <pre>Errors: {JSON.stringify(form.errors, null, 2)}</pre>
-            <pre>Warnings: {JSON.stringify(form.warnings, null, 2)}</pre>
-          </Div>
-        )}
-      />
+    <Form
+      initialValues={internalValues}
+      onSubmit={onSubmit}
+      validators={validators}
+      warningValidators={warningValidators}
+      statePreview={form => (
+        <Div columnTop radius={4} padding={8} border="1px solid">
+          <pre>
+            {JSON.stringify({ form: { values: form.values, errors: form.errors, warnings: form.warnings } }, null, 2)}
+          </pre>
+        </Div>
+      )}
+    >
       <button onClick={reinitializeValues}>Reinitialize values</button>
-    </div>
+    </Form>
   )
 }
 
