@@ -139,10 +139,10 @@ export default function useForm({
     setIsSubmitting(false)
   }
 
-  const handleSubmit = async event => {
+  const handleSubmit = event => {
     event.preventDefault()
 
-    if (!onSubmit) return
+    if (typeof onSubmit !== 'function') return
 
     touchAllFields()
 
@@ -157,8 +157,12 @@ export default function useForm({
     setHasSubmitFailed(false)
 
     setIsSubmitting(true)
-    await onSubmit(values, setError, inputs)
-    setIsSubmitting(false)
+
+    const submitResult = onSubmit(values, setError, inputs)
+
+    if (submitResult && typeof submitResult.then) {
+      submitResult.then(() => setIsSubmitting(false))
+    }
   }
 
   // Updates DevTools when values or validation statuses change

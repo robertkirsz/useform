@@ -1,3 +1,4 @@
+import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import App, { initialValues, validators, warningValidators, changedValues, SUBMIT, SUBMITTING } from 'App'
