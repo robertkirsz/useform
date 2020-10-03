@@ -1,6 +1,10 @@
 import { useState, useEffect, useContext } from 'react'
-import _isEqual from 'lodash.isequal'
 import usePrevious from 'usePrevious'
+
+function areEqual(a, b) {
+  for (var key in a) if (a[key] !== b[key]) return false
+  return true
+}
 
 export default function useForm({
   name = 'Form',
@@ -17,7 +21,7 @@ export default function useForm({
   const previousValues = usePrevious(initialValues)
 
   useEffect(() => {
-    if (previousValues !== undefined && !_isEqual(previousValues, initialValues)) {
+    if (previousValues !== undefined && !areEqual(previousValues, initialValues)) {
       setValues(initialValues)
     }
   })

@@ -32,7 +32,6 @@
     "prettier": "prettier --ignore-path .gitignore --write '{**/*.js,*.js}'"
   },
   "dependencies": {
-    "lodash.isequal": "4.5.0",
     "react": "16.13.1"
   },
   "devDependencies": {
