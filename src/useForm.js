@@ -155,11 +155,10 @@ export default function useForm({
 
     setHasSubmitFailed(false)
 
-    setIsSubmitting(true)
-
     const submitResult = onSubmit(values, setError, inputs)
 
     if (submitResult && typeof submitResult.then) {
+      setIsSubmitting(true)
       submitResult.then(() => setIsSubmitting(false))
     }
   }

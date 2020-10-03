@@ -4,7 +4,6 @@ import '@testing-library/jest-dom'
 import App, { initialValues, validators, warningValidators, changedValues } from 'App'
 
 // TODO: test
-// Works with and without Promised submit
 // Direct changes (values, errors, warnings)
 // addValidationStatus
 // Scroll to invalid field
@@ -59,7 +58,7 @@ describe('useForm hook', () => {
     expect(onSubmit.mock.calls[0][0].checkbox).toBe(changedValues.checkbox)
     expect(onSubmit.mock.calls[0][0].radio).toBe(changedValues.radio)
     expect(onSubmit.mock.calls[0][0].select).toBe(changedValues.select)
-    
+
     expect(await findByText('Submit')).toBeVisible()
   })
 
@@ -91,6 +90,20 @@ describe('useForm hook', () => {
     fireEvent.blur(input)
 
     expect(getByText('Value is too short')).toBeVisible()
+  })
+
+  it("Works if submit function doesn't return a Promise", () => {
+    const onSubmit = jest.fn()
+
+    const { getByTestId } = render(<App initialValues={initialValues} onSubmit={onSubmit} />)
+
+    fireEvent.submit(getByTestId('form'))
+
+    expect(onSubmit).toBeCalledTimes(1)
+    expect(onSubmit.mock.calls[0][0].input).toBe(initialValues.input)
+    expect(onSubmit.mock.calls[0][0].checkbox).toBe(initialValues.checkbox)
+    expect(onSubmit.mock.calls[0][0].radio).toBe(initialValues.radio)
+    expect(onSubmit.mock.calls[0][0].select).toBe(initialValues.select)
   })
 
   it("Doesn't submit an invalid form", () => {
