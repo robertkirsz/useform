@@ -8,7 +8,7 @@ export default function useForm({
   onSubmit = null,
   validators = {},
   warningValidators = {},
-  addValidationStatus = true,
+  addValidationStatus = false,
   scrollIntoInvalidFieldOffset = 50,
   devToolsContext = {}
 }) {

@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import App, { initialValues, changedValues, SUBMIT, SUBMITTING } from 'App'
+import App, { initialValues, validators, warningValidators, changedValues, SUBMIT, SUBMITTING } from 'App'
 
 describe('useForm hook', () => {
   window.scrollTo = jest.fn()
@@ -8,17 +8,17 @@ describe('useForm hook', () => {
   it('Works with native input elements', async () => {
     const onSubmit = jest.fn(() => new Promise(resolve => resolve))
 
-    const { queryByTestId, queryByLabelText, findByText } = render(
+    const { getByTestId, getByLabelText, findByText } = render(
       <App initialValues={initialValues} onSubmit={onSubmit} />
     )
 
-    const form = queryByTestId('form')
-    const input = queryByLabelText('Input')
-    const checkbox = queryByLabelText('Checkbox')
-    const radio1 = queryByLabelText('Radio 1')
-    const radio2 = queryByLabelText('Radio 2')
-    const select = queryByTestId('select')
-    const button = queryByTestId('button')
+    const form = getByTestId('form')
+    const input = getByLabelText('Input')
+    const checkbox = getByLabelText('Checkbox')
+    const radio1 = getByLabelText('Radio 1')
+    const radio2 = getByLabelText('Radio 2')
+    const select = getByTestId('select')
+    const button = getByTestId('button')
 
     // Check if the initial form state was properly applied
     expect(input.value).toBe(initialValues.input)
@@ -54,22 +54,33 @@ describe('useForm hook', () => {
     // expect(await findByText(SUBMIT)).toBeVisible()
   })
 
+  it('Displays validation errors', () => {
+    const { getByText, getByLabelText } = render(<App initialValues={initialValues} validators={validators} />)
+    const input = getByLabelText('Input')
+
+    fireEvent.change(input, { target: { value: '' } })
+    fireEvent.blur(input)
+
+    expect(getByText('Value is required')).toBeVisible()
+  })
+
+  it('Displays validation warnings', () => {
+    const { getByText, getByLabelText } = render(
+      <App initialValues={initialValues} warningValidators={warningValidators} />
+    )
+    const input = getByLabelText('Input')
+
+    fireEvent.change(input, { target: { value: 'A' } })
+    fireEvent.blur(input)
+
+    expect(getByText('Value is too short')).toBeVisible()
+  })
+
   it("Doesn't submit invalid form", () => {
     const onSubmit = jest.fn()
 
-    const invalidInitialValues = {
-      input: '',
-      checkbox: true,
-      radio: 'radio_1',
-      select: 'option_1'
-    }
-
-    const validators = {
-      input: value => (value === '' ? 'Value is required' : undefined)
-    }
-
     const { queryByTestId } = render(
-      <App initialValues={invalidInitialValues} validators={validators} onSubmit={onSubmit} />
+      <App initialValues={{ ...initialValues, input: '' }} validators={validators} onSubmit={onSubmit} />
     )
 
     fireEvent.submit(queryByTestId('form'))
