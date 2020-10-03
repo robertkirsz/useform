@@ -1,6 +1,6 @@
 {
   "name": "@robertkirsz/useform",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A React Hook for handling forms",
   "author": "Robert Kirsz <robert.kirsz@gmail.com> (https://robertkirsz.com)",
   "homepage": "https://github.com/robertkirsz/useform#readme",

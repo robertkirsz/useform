@@ -5,7 +5,7 @@ A React Hook for handling forms
 npm install @robertkirsz/useform
 ```
 
-##### Simplest usable example:
+## Simplest usable example:
 
 ```js
 import useForm from '@robertkirsz/useform'
@@ -25,7 +25,7 @@ function App() {
 }
 ```
 
-##### Validation:
+## Validation:
 
 ```js
 const form = useForm({
@@ -34,7 +34,7 @@ const form = useForm({
 })
 ```
 
-##### Warnings:
+## Warnings:
 
 ```js
 const form = useForm({
@@ -43,13 +43,13 @@ const form = useForm({
 })
 ```
 
-##### Setting values directly:
+## Setting values directly:
 
 ```js
 form.setValue('firstName', 'Marzena')
 ```
 
-##### Triggering validation programatically:
+## Triggering validation programatically:
 
 ```js
 form.validateField('firstName')
@@ -57,17 +57,34 @@ form.touchField('firstName')
 ```
 We need to "touch" the field first, because "untouched" fields don't show validation statuses.
 
-##### Setting validation errors directly:
+## Setting validation errors directly:
 
 ```js
 form.setError('firstName', 'Name must be "Marzenka"!')
 form.touchField('firstName')
 ```
 
-##### Showing that the form is submitting:
+## Showing that the form is submitting:
+
+For that, you need to return a [Promise](https://javascript.info/promise-basics) from your `onSubmit` function, like that:
 
 ```js
-<button type="submit">
-  {form.isSubmitting ? 'Submitting...' : 'Submit'}
-</button>
+function App() {
+  const form = useForm({
+    initialValues: { firstName: 'Kasia' },
+    onSubmit: values => new Promise(resolve => {
+      /* Do something with values, probably you want to send them to a server */
+      resolve()
+    })
+  })
+
+  return (
+    <form onSubmit={form.handleSubmit}>
+      <input {...form.inputs.firstName} />
+      <button type="submit">
+        {form.isSubmitting ? 'Submitting...' : 'Submit'}
+      </button>
+    </form>
+  )
+}
 ```
